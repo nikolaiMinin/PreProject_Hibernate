@@ -28,6 +28,7 @@ public class Main {
             }
 
             userService.cleanUsersTable();
+            userService.dropUsersTable();
 
         } catch (SQLException e) {
             e.printStackTrace();

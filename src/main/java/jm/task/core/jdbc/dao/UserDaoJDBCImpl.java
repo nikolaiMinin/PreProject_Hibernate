@@ -10,6 +10,7 @@ import java.util.List;
 public class UserDaoJDBCImpl implements UserDao {
 
     final String TABLE_NAME = "users_table";
+
     public UserDaoJDBCImpl() {
 
     }
@@ -29,9 +30,7 @@ public class UserDaoJDBCImpl implements UserDao {
         } catch (SQLException e) {
             e.printStackTrace();
         }
-
     }
-
     public void dropUsersTable() {
         try (Connection con = Util.getConnection(); Statement stmt = con.createStatement()) {
             stmt.executeUpdate("DROP TABLE IF EXISTS `users_database`.`users_table`");
@@ -39,7 +38,6 @@ public class UserDaoJDBCImpl implements UserDao {
             e.printStackTrace();
         }
     }
-
     public void saveUser(String name, String lastName, byte age) {
 
         try (Connection con = Util.getConnection();
@@ -58,7 +56,6 @@ public class UserDaoJDBCImpl implements UserDao {
             e.printStackTrace();
         }
     }
-
     public void removeUserById(long id) {
         try (Connection con = Util.getConnection(); Statement stmt = con.createStatement()) {
             stmt.executeUpdate("DELETE FROM `users_database`.`users_table` WHERE (`user_id` = " + id + " )");
@@ -66,18 +63,15 @@ public class UserDaoJDBCImpl implements UserDao {
             e.printStackTrace();
         }
     }
-
     public List<User> getAllUsers() {
 
         List<User> userList = new ArrayList<>();
 
         try (Connection con = Util.getConnection();
-             PreparedStatement stmt = con.prepareStatement("SELECT * FROM users_table")) {
-
+            PreparedStatement stmt = con.prepareStatement("SELECT * FROM users_table")) {
             ResultSet rs = stmt.executeQuery();
 
             while (rs.next()) {
-
                 Long user_id = rs.getLong("user_id");
                 String user_name = rs.getString("user_name");
                 String user_lastname = rs.getString("user_lastname");
