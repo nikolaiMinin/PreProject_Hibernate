@@ -3,6 +3,8 @@ import jm.task.core.jdbc.model.User;
 import jm.task.core.jdbc.service.UserService;
 import jm.task.core.jdbc.service.UserServiceImpl;
 import jm.task.core.jdbc.util.Util;
+import org.hibernate.SessionFactory;
+import org.hibernate.cfg.Configuration;
 
 import java.sql.Connection;
 import java.sql.SQLException;
@@ -11,7 +13,12 @@ import java.util.List;
 public class Main {
     public static void main(String[] args) {
 
-        try (Connection con = Util.getConnection()) {
+        SessionFactory factory = new Configuration()
+                .configure("hibernate.cfg.xml")
+                .addAnnotatedClass(User.class)
+                .buildSessionFactory();
+
+        /*try (Connection con = Util.getConnection()) {
             UserServiceImpl userService = new UserServiceImpl();
 
             userService.dropUsersTable();
@@ -32,6 +39,6 @@ public class Main {
 
         } catch (SQLException e) {
             e.printStackTrace();
-        }
+        }*/
     }
 }
