@@ -1,25 +1,50 @@
 package jm.task.core.jdbc.util;
+import jm.task.core.jdbc.model.User;
+import org.hibernate.Session;
+import org.hibernate.SessionFactory;
+import org.hibernate.boot.registry.StandardServiceRegistryBuilder;
+import org.hibernate.cfg.Configuration;
+import org.hibernate.cfg.Environment;
+import org.hibernate.service.ServiceRegistry;
 
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.SQLException;
+import java.util.Properties;
 
 public class Util {
-    public static Connection getConnection() {
+    private static SessionFactory sessionFactory;
+    public static SessionFactory getSessionFactory() {
+        if (sessionFactory == null) {
+            try {
+                Configuration configuration = new Configuration();
 
-        Connection con = null;
+                // Hibernate settings equivalent to hibernate.cfg.xml's properties
+                Properties settings = new Properties();
+                settings.put(Environment.DRIVER, "com.mysql.cj.jdbc.Driver");
+                settings.put(Environment.URL, "jdbc:mysql://localhost:3306/users_database?useSSL=false");
+                settings.put(Environment.USER, "minin");
+                settings.put(Environment.PASS, "root1234!");
+                settings.put(Environment.DIALECT, "org.hibernate.dialect.MySQL5Dialect");
 
-        try {
-            con = DriverManager.getConnection(
-                    "jdbc:mysql://localhost:3306/users_database", "minin", "root1234!");
+                settings.put(Environment.SHOW_SQL, "true");
 
-            if (!con.isClosed()) {
-                System.out.println("Connection successful");
+                settings.put(Environment.CURRENT_SESSION_CONTEXT_CLASS, "thread");
+
+                settings.put(Environment.HBM2DDL_AUTO, "");
+
+                configuration.setProperties(settings);
+
+                configuration.addAnnotatedClass(User.class);
+
+                ServiceRegistry serviceRegistry = new StandardServiceRegistryBuilder()
+                        .applySettings(configuration.getProperties()).build();
+
+                sessionFactory = configuration.buildSessionFactory(serviceRegistry);
+            } catch (Exception e) {
+                e.printStackTrace();
             }
-        } catch (SQLException e) {
-            System.out.println("Exception while trying to connect database");
         }
-
-        return con;
+        return sessionFactory;
+    }
+    public static void closeSessionFactory() {
+        sessionFactory.close();
     }
 }
